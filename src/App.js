@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Circle } from 'lucide-react';
 import { motion } from 'framer-motion';
-import ProfilePic from './assets/profile.jpg';
+import ProfilePic from './assets/me.jpg';
 import javaLogo from './assets/java.png';
 import kotlinLogo from './assets/kotlin.png';
 import aspLogo from './assets/aps.png';
@@ -65,14 +64,14 @@ export default function CleanMinimalPortfolio() {
               <img 
                 src={ProfilePic} 
                 alt="Jam Ardines" 
-                className="w-64 h-65 object-cover rounded-lg"
+                className="w-64 h-67 object-cover"
               />
             </div>
             <div className="flex-1 text-center md:text-left">
               <h1 className="text-5xl md:text-6xl font-light mb-8 leading-tight">
                 Hi, I'm Jam<br />
-                <span>A </span>
-                <span className="text-blue-600">Software Developer</span>
+                <span className="font-light">A</span>
+                <span className="text-blue-600"> Software Developer</span>
               </h1>
               <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
                 I am a third-year BSCS student at the University of Cebu and an aspiring 
@@ -153,7 +152,7 @@ export default function CleanMinimalPortfolio() {
       {/* Footer */}
       <footer className="border-t border-gray-200">
         <div className="w-full max-w-[928px] mx-auto px-6 py-8 flex items-center justify-center text-sm text-gray-500">
-          <p>© 2025 All rights reserved</p>
+          <p>© 2026 Jam Ardines. All rights reserved</p>
         </div>
       </footer>
     </div>
