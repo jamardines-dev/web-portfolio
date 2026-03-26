@@ -70,7 +70,7 @@ export default function CleanMinimalPortfolio() {
               <img
                 src={ProfilePic}
                 alt="Jam Ardines"
-                className="w-80 h-90 object-cover"
+                className="w-80 h-74 object-cover"
               />
             </div>
             <div className="flex-1 text-center md:text-left">
@@ -79,7 +79,7 @@ export default function CleanMinimalPortfolio() {
                 <span className="font-light">A</span>
                 <span className="text-blue-600"> Software Developer</span>
               </h1>
-              <p className="text-lg md:text-lg text-gray-600 leading-relaxed">
+              <p className="text-lg md:text-lg text-gray-600 leading-relaxed text-justify">
                 I am a third-year BSCS student at the University of Cebu and an aspiring
                 Software Developer, passionate about building reliable and user-friendly applications.
                 I focus on creating well-structured systems and intuitive interfaces that provide
