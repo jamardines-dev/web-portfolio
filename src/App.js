@@ -139,7 +139,7 @@ export default function CleanMinimalPortfolio() {
             <motion.a href="https://www.linkedin.com/in/jam-ardines-33407b392/" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.2 }}>
               <img src={linkedinLogo} alt="LinkedIn" className="w-10 h-10" />
             </motion.a>
-            <motion.a href="https://github.com/jamardines" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.2 }}>
+            <motion.a href="https://github.com/jamardines-dev" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.2 }}>
               <img src={githubLogo} alt="GitHub" className="w-10 h-10" />
             </motion.a>
           </div>
