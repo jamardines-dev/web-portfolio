@@ -3,15 +3,50 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ProfilePic from './assets/pp.jpeg';
 import javaLogo from './assets/java.png';
 import kotlinLogo from './assets/kotlin.png';
-import aspLogo from './assets/aps.png';
 import reactLogo from './assets/react.png';
 import githubLogo from './assets/github.png';
 import linkedinLogo from './assets/linkedin.png';
 import PanindaDemo from './assets/projects/panindamobile.mp4';
 
+import photo1 from './assets/gallery/photo1.jpg';
+import photo2 from './assets/gallery/photo2.jpeg';
+import photo3 from './assets/gallery/photo3.jpeg';
+import photo4 from './assets/gallery/photo4.jpeg';
+import photo5 from './assets/gallery/photo5.jpeg';
+import photo6 from './assets/gallery/photo6.jpeg';
+import photo7 from './assets/gallery/photo7.jpg';
+import photo8 from './assets/gallery/photo8.jpg';
+import photo9 from './assets/gallery/photo9.jpg';
+
 export default function CleanMinimalPortfolio() {
   const [scrolled, setScrolled] = useState(false);
   const [showPanindaModal, setShowPanindaModal] = useState(false);
+  const [startIndex, setStartIndex] = useState(0);
+
+  const galleryPhotos = [
+    { src: photo1, caption: 'photo 1' },
+    { src: photo2, caption: 'photo 2' },
+    { src: photo3, caption: 'photo 3' },
+    { src: photo4, caption: 'photo 4' },
+    { src: photo5, caption: 'photo 5' },
+    { src: photo6, caption: 'photo 6' },
+    { src: photo7, caption: 'photo 7' },
+    { src: photo8, caption: 'photo 8' },
+    { src: photo9, caption: 'photo 9' },
+  ];
+
+  const skills = [
+    { logo: javaLogo, name: 'Java' },
+    { logo: kotlinLogo, name: 'Kotlin' },
+    { logo: reactLogo, name: 'React' },
+  ];
+
+  const projects = [
+    { id: 1, title: 'Paninda Mobile', year: '2025', role: 'Frontend Developer' },
+    { id: 2, title: 'AlgoSensei', year: '2025', role: 'Full-Stack Developer' },
+    { id: 3, title: 'Masala Restaurant', year: '2025', role: 'Full-Stack Developer' },
+    { id: 4, title: 'Portfolio CMS', year: '2025', role: 'Solo Developer' }
+  ];
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -24,89 +59,113 @@ export default function CleanMinimalPortfolio() {
     return () => { document.body.style.overflow = ''; };
   }, [showPanindaModal]);
 
-  const skills = [
-    { logo: javaLogo, name: 'Java' },
-    { logo: kotlinLogo, name: 'Kotlin' },
-    { logo: aspLogo, name: 'ASP.NET' },
-    { logo: reactLogo, name: 'React' },
-  ];
+  const visiblePhotos = galleryPhotos.slice(startIndex, startIndex + 5);
 
-  const projects = [
-    { id: 1, title: 'Paninda Mobile', year: '2025', role: 'Frontend Developer' },
-    { id: 2, title: 'AlgoSensei', year: '2025', role: 'Full-Stack Developer' },
-    { id: 3, title: 'Masala Restaurant', year: '2025', role: 'Full-Stack Developer' },
-    { id: 4, title: 'Portfolio CMS', year: '2025', role: 'Solo Developer' }
-  ];
+  const handlePrev = () => setStartIndex(prev => Math.max(prev - 1, 0));
+  const handleNext = () => setStartIndex(prev => Math.min(prev + 1, galleryPhotos.length - 5));
 
   return (
     <div className="min-h-screen bg-white text-gray-900 scroll-smooth">
 
-      {/* Glass Header */}
-      <header
-        className={`fixed w-full top-0 left-0 z-50 flex justify-center transition-all duration-300 ${
-          scrolled ? 'bg-white/70 backdrop-blur-md shadow-md' : 'bg-white'
-        }`}
-      >
+      {/* Header */}
+      <header className={`fixed w-full top-0 left-0 z-50 flex justify-center transition-all duration-300 ${
+        scrolled ? 'bg-white/70 backdrop-blur-md shadow-md' : 'bg-white'
+      }`}>
         <div className="w-full max-w-[928px] px-6 py-6 flex items-center justify-between">
           <div className="text-sm font-medium tracking-wide">Jam Ardines</div>
           <nav className="flex gap-8 text-sm">
-            <a href="#home" className="hover:text-gray-600 transition">Home</a>
-            <a href="#techstack" className="hover:text-gray-600 transition">Tech Stack</a>
-            <a href="#projects" className="hover:text-gray-600 transition">Projects</a>
+            <a href="#home">Home</a>
+            <a href="#techstack">Tech Stack</a>
+            <a href="#projects">Projects</a>
           </nav>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section id="home" className="relative min-h-[992px] w-full max-w-[928px] flex items-center justify-center bg-white mx-auto px-6 py-20">
+      <section id="home" className="relative min-h-[992px] w-full max-w-[928px] flex flex-col items-center justify-center bg-white mx-auto px-6 py-20">
         <motion.div
           className="w-full"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <div className="flex flex-col md:flex-row items-center md:items-start gap-16">
-            <div className="flex-shrink-0">
-              <img
-                src={ProfilePic}
-                alt="Jam Ardines"
-                className="w-80 h-74 object-cover"
-              />
-            </div>
-            <div className="flex-1 text-center md:text-left">
-              <h1 className="text-5xl md:text-5xl font-light mb-8 leading-tight">
-                Hi, I'm Jam<br />
-                <span className="font-light">A</span>
-                <span className="text-blue-600"> Software Developer</span>
-              </h1>
-              <p className="text-lg md:text-lg text-gray-600 leading-relaxed text-justify">
-                I am a third-year BSCS student at the University of Cebu and an aspiring
-                Software Developer, passionate about building reliable and user-friendly applications.
-                I focus on creating well-structured systems and intuitive interfaces that provide
-                meaningful solutions to real-world problems.
-              </p>
+
+          {/* Hero content */}
+          <div className="min-h-[70vh] flex items-center">
+            <div className="flex flex-col md:flex-row items-center md:items-start gap-16 w-full">
+              <div className="flex-shrink-0">
+                <img src={ProfilePic} alt="Jam Ardines" className="w-80 h-74 object-cover" />
+              </div>
+              <div className="flex-1 text-center md:text-left">
+                <h1 className="text-5xl font-light mb-8 leading-tight">
+                  Hi, I'm Jam<br />
+                  <span className="font-light">A</span>
+                  <span className="text-blue-600"> Software Developer</span>
+                </h1>
+                <p className="text-lg text-gray-600 leading-relaxed text-justify">
+                  I am a third-year BSCS student at the University of Cebu and an aspiring
+                  Software Developer, passionate about building reliable and user-friendly applications.
+                </p>
+              </div>
             </div>
           </div>
+
+          {/* Gallery with arrows */}
+          <div className="-mt-28 w-full">
+            <p className="text-sm font-medium tracking-wide text-gray-500 mb-6">GALLERY</p>
+            <div className="relative flex items-center justify-center gap-3">
+
+              {/* Left arrow */}
+              <button 
+                onClick={handlePrev} 
+                className="absolute left-0 z-10 p-2 bg-white border rounded-full shadow hover:bg-gray-50"
+                disabled={startIndex === 0}
+              >
+                ◀
+              </button>
+
+              {/* Visible photos */}
+              <div className="flex gap-3 overflow-hidden w-full justify-center">
+                {visiblePhotos.map((photo, idx) => (
+                  <motion.div
+                    key={idx}
+                    className="w-[150px] h-[150px] flex-shrink-0 rounded-md overflow-hidden flex items-center justify-center text-gray-400 text-xs"
+                    whileHover={{ scale: 1.02 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: idx * 0.1 }}
+                  >
+                    <img src={photo.src} alt={photo.caption} className="w-full h-full object-cover" />
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Right arrow */}
+              <button 
+                onClick={handleNext} 
+                className="absolute right-0 z-10 p-2 bg-white border rounded-full shadow hover:bg-gray-50"
+                disabled={startIndex >= galleryPhotos.length - 5}
+              >
+                ▶
+              </button>
+
+            </div>
+          </div>
+
         </motion.div>
       </section>
 
       {/* Skills Section */}
-      <section id="techstack" className="relative min-h-[992px] w-full max-w-[928px] flex items-center justify-center bg-white border-t border-gray-200 mx-auto px-6 py-20">
-        <div className="w-full text-center">
-          <h2 className="text-sm font-medium tracking-wide mb-8 text-gray-500">SKILLS</h2>
-          <div className="flex flex-wrap justify-center gap-6">
-            {skills.map((skill, idx) => (
-              <motion.div
-                key={idx}
-                className="flex flex-row items-center gap-6 cursor-pointer"
+      <section id="techstack" className="min-h-[992px] flex items-center justify-center border-t">
+        <div className="text-center">
+          <h2 className="mb-8 text-gray-500 text-sm tracking-wide">SKILLS</h2>
+          <div className="flex gap-6 justify-center flex-wrap">
+            {skills.map((s, i) => (
+              <motion.div key={i} className="flex items-center gap-4 cursor-pointer"
                 whileHover={{ scale: 1.05, y: -2 }}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
               >
-                <span className="text-2xl font-medium">{skill.name}</span>
-                <img src={skill.logo} alt={skill.name} className="w-16 h-16 object-contain" />
+                <span className="text-2xl font-medium">{s.name}</span>
+                <img src={s.logo} className="w-16 h-16 object-contain" alt={s.name} />
               </motion.div>
             ))}
           </div>
@@ -114,23 +173,21 @@ export default function CleanMinimalPortfolio() {
       </section>
 
       {/* Projects Section */}
-      <section id="projects" className="relative min-h-[992px] w-full max-w-[928px] flex items-center justify-center bg-white border-t border-gray-200 mx-auto px-6 py-20">
-        <div className="w-full text-center">
-          <h2 className="text-sm font-medium tracking-wide mb-12 text-gray-500">PROJECTS</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {projects.map((project, idx) => (
-              <motion.div
-                key={project.id}
-                className="p-6 border rounded-lg shadow-md hover:shadow-xl transition cursor-pointer"
+      <section id="projects" className="min-h-[992px] flex items-center justify-center border-t">
+        <div className="text-center">
+          <h2 className="mb-12 text-gray-500 text-sm tracking-wide">PROJECTS</h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            {projects.map((p, idx) => (
+              <motion.div key={p.id} className="p-6 border rounded-lg cursor-pointer hover:shadow-lg"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.5, delay: idx * 0.1 }}
-                onClick={() => project.id === 1 && setShowPanindaModal(true)}
+                onClick={() => p.id === 1 && setShowPanindaModal(true)}
               >
-                <h3 className="text-2xl font-medium mb-2">{project.title}</h3>
-                <p className="text-gray-500 mb-2">{project.role}</p>
-                <p className="text-gray-400 text-sm">{project.year}</p>
+                <h3 className="text-2xl font-medium mb-2">{p.title}</h3>
+                <p className="text-gray-500 mb-1">{p.role}</p>
+                <p className="text-gray-400 text-sm">{p.year}</p>
               </motion.div>
             ))}
           </div>
@@ -146,14 +203,7 @@ export default function CleanMinimalPortfolio() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-gray-200">
-        <div className="w-full max-w-[928px] mx-auto px-6 py-8 flex items-center justify-center text-sm text-gray-500">
-          <p>© 2026 Jam Ardines. All rights reserved</p>
-        </div>
-      </footer>
-
-      {/* Paninda Mobile Modal */}
+      {/* Paninda Mobile Modal - IMPROVED VERSION */}
       <AnimatePresence>
         {showPanindaModal && (
           <motion.div
