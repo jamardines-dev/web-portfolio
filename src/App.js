@@ -64,6 +64,9 @@ export default function CleanMinimalPortfolio() {
   const canGoPrev = startIndex > 0;
   const canGoNext = startIndex < galleryPhotos.length - 5;
 
+  // Calculate total number of possible positions
+  const totalDots = galleryPhotos.length - 4;
+
   const handlePrev = () => setStartIndex(prev => Math.max(prev - 1, 0));
   const handleNext = () => setStartIndex(prev => Math.min(prev + 1, galleryPhotos.length - 5));
 
@@ -83,6 +86,11 @@ export default function CleanMinimalPortfolio() {
   // Close lightbox
   const closeLightbox = () => {
     setLightboxImage(null);
+  };
+
+  // Go to specific slide when clicking dot
+  const goToSlide = (index) => {
+    setStartIndex(index);
   };
 
   return (
@@ -139,9 +147,27 @@ export default function CleanMinimalPortfolio() {
             </div>
           </div>
 
-          {/* GALLERY SECTION */}
+          {/* GALLERY SECTION WITH DOTS */}
           <div className="-mt-28 w-full">
-            <p className="text-xs font-medium tracking-[0.2em] text-gray-400 uppercase mb-6">Gallery</p>
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-xs font-medium tracking-[0.2em] text-gray-400 uppercase">Gallery</p>
+              
+              {/* Pagination Dots */}
+              <div className="flex gap-2 ">
+                {Array.from({ length: totalDots }).map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => goToSlide(idx)}
+                    className={`h-2 rounded-full transition-all duration-300  ${
+                      idx === startIndex 
+                        ? 'w-6 bg-gray-800' 
+                        : 'w-2 bg-gray-300 hover:bg-gray-400'
+                    }`}
+                    aria-label={`Go to slide ${idx + 1}`}
+                  />
+                ))}
+              </div>
+            </div>
             
             <div className="relative group">
               
