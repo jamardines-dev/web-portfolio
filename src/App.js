@@ -64,13 +64,12 @@ export default function CleanMinimalPortfolio() {
   const canGoPrev = startIndex > 0;
   const canGoNext = startIndex < galleryPhotos.length - 5;
 
-  // Calculate total number of possible positions
   const totalDots = galleryPhotos.length - 4;
 
   const handlePrev = () => setStartIndex(prev => Math.max(prev - 1, 0));
   const handleNext = () => setStartIndex(prev => Math.min(prev + 1, galleryPhotos.length - 5));
 
-  // Smooth scroll function
+
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -78,7 +77,6 @@ export default function CleanMinimalPortfolio() {
     }
   };
 
-  // Open lightbox with selected image
   const openLightbox = (imageSrc) => {
     setLightboxImage(imageSrc);
   };
@@ -204,7 +202,7 @@ export default function CleanMinimalPortfolio() {
                     >
                       <img 
                         src={photo.src} 
-                        alt="Gallery photo" 
+                        alt="Gallery" 
                         className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                       />
                     </motion.div>
@@ -349,7 +347,7 @@ export default function CleanMinimalPortfolio() {
               {/* Expanded Image */}
               <img 
                 src={lightboxImage} 
-                alt="Expanded gallery photo" 
+                alt="Gallery view" 
                 className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
               />
             </motion.div>
