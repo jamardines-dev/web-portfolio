@@ -1,13 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ASSET IMPORTS
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Profile & Logos
 import ProfilePic from './assets/pp.jpeg';
 import javaLogo from './assets/java.png';
 import kotlinLogo from './assets/kotlin.png';
 import reactLogo from './assets/react.png';
-import githubLogo from './assets/github.png';
-import linkedinLogo from './assets/linkedin.png';
+import dockerLogo from './assets/Docker.png';
+import pythonLogo from './assets/python.png'; // Add this import
+
+// Project Media
 import PanindaDemo from './assets/projects/panindamobile.mp4';
 
+// Gallery Photos
 import photo1 from './assets/gallery/photo1.jpg';
 import photo2 from './assets/gallery/photo2.jpeg';
 import photo3 from './assets/gallery/photo3.jpeg';
@@ -18,62 +27,1080 @@ import photo7 from './assets/gallery/photo7.jpg';
 import photo8 from './assets/gallery/photo8.jpg';
 import photo9 from './assets/gallery/photo9.jpg';
 
-export default function CleanMinimalPortfolio() {
-  const [scrolled, setScrolled]       = useState(false);
-  const [menuOpen, setMenuOpen]       = useState(false);
-  const [showPanindaModal, setShowPanindaModal] = useState(false);
-  const [startIndex, setStartIndex]   = useState(0);
-  const [lightboxImage, setLightboxImage] = useState(null);
-  const [isMobile, setIsMobile]       = useState(false);
+// ─────────────────────────────────────────────────────────────────────────────
+// DATA CONSTANTS
+// ─────────────────────────────────────────────────────────────────────────────
 
-  const galleryPhotos = [
-    { src: photo1 }, { src: photo2 }, { src: photo3 },
-    { src: photo4 }, { src: photo5 }, { src: photo6 },
-    { src: photo7 }, { src: photo8 }, { src: photo9 },
-  ];
+const GALLERY_PHOTOS = [
+  { src: photo1 },
+  { src: photo2 },
+  { src: photo3 },
+  { src: photo4 },
+  { src: photo5 },
+  { src: photo6 },
+  { src: photo7 },
+  { src: photo8 },
+  { src: photo9 },
+];
 
-  const skills = [
-    { logo: javaLogo,    name: 'Java'   },
-    { logo: kotlinLogo,  name: 'Kotlin' },
-    { logo: reactLogo,   name: 'React'  },
-  ];
+const SKILLS = [
+  {
+    logo: javaLogo,
+    name: 'Java',
+    desc: 'Object-oriented applications and backend services',
+  },
+  {
+    logo: kotlinLogo,
+    name: 'Kotlin',
+    desc: 'Android & Mobile Development',
+  },
+  {
+    logo: reactLogo,
+    name: 'React',
+    desc: 'Modern, component-driven web interfaces',
+  },
+  {
+    logo: dockerLogo,
+    name: 'Docker',
+    desc: 'Containerization for consistent development and deployment',
+  },
+  {
+    logo: pythonLogo,
+    name: 'Python',
+    desc: 'Data processing, jupyter notebooks, and machine learning basics',
+  },
+];
 
-  const projects = [
-    { id: 1, title: 'Paninda Mobile',   year: '2025', role: 'Frontend Developer',   status: 'completed'  },
-    { id: 2, title: 'AlgoSensei',       year: '2025', role: '',                      status: 'in-progress' },
-    { id: 3, title: 'Masala Restaurant',year: '2025', role: 'Full-Stack Developer',  status: 'completed'  },
-    { id: 4, title: 'Portfolio CMS',    year: '2025', role: 'Solo Developer',        status: 'completed'  },
-  ];
+const PROJECTS = [
+  {
+    id: 1,
+    num: '01',
+    title: 'Paninda Mobile',
+    year: '2025',
+    role: 'Frontend Developer',
+    status: 'completed',
+  },
+  {
+    id: 2,
+    num: '02',
+    title: 'AlgoSensei',
+    year: '2025',
+    role: '',
+    status: 'in-progress',
+  },
+  {
+    id: 3,
+    num: '03',
+    title: 'Masala Restaurant',
+    year: '2025',
+    role: 'Full-Stack Developer',
+    status: 'completed',
+  },
+  {
+    id: 4,
+    num: '04',
+    title: 'Portfolio CMS',
+    year: '2025',
+    role: 'Solo Developer',
+    status: 'completed',
+  },
+];
 
-  const photosPerPage  = isMobile ? 3 : 5;
-  const visiblePhotos  = galleryPhotos.slice(startIndex, startIndex + photosPerPage);
-  const canGoPrev      = startIndex > 0;
-  const canGoNext      = startIndex < galleryPhotos.length - photosPerPage;
-  const totalDots      = galleryPhotos.length - photosPerPage + 1;
+const NAV_ITEMS = [
+  ['hero', 'Home'],
+  ['techstack', 'Stack'],
+  ['projects', 'Projects'],
+];
 
+const PANINDA_FEATURES = [
+  'Real-time inventory tracking with low-stock alerts',
+  'Secure transaction logging and permanent sales history',
+  'Business insights and reports for data-driven decisions',
+  'Full operator control with strong data security',
+];
+
+const PANINDA_TAGS = ['Kotlin', 'Spring Boot', 'PostgreSQL'];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STYLES
+// ─────────────────────────────────────────────────────────────────────────────
+
+const FONTS = `
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
+`;
+
+const CSS_STYLES = `
+  /* ─── CSS Variables ─── */
+  :root {
+    --ink:       #0f0e0d;
+    --ink-m:     #6b6760;
+    --ink-f:     #c8c5bf;
+    --paper:     #f7f5f1;
+    --paper-2:   #edeae4;
+    --rule:      #d4d0c8;
+    --blue:      #1a48c4;
+    --blue-dim:  rgba(26,72,196,0.07);
+    --serif:     'DM Serif Display', Georgia, serif;
+    --sans:      'DM Sans', system-ui, sans-serif;
+    --max-width: 960px;
+  }
+
+  /* ─── Reset & Base ─── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; scroll-padding-top: 56px; }
+  body { 
+    background: var(--paper); 
+    color: var(--ink); 
+    font-family: var(--sans);
+    min-height: 100vh;
+  }
+
+  /* ─── Centered Layout Wrapper ─── */
+  .pf-layout {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pf-container {
+    width: 100%;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ─── Navigation ─── */
+  .pf-nav {
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    right: 0; 
+    z-index: 100;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    transition: box-shadow .3s;
+  }
+  .pf-nav.scrolled { box-shadow: 0 1px 12px rgba(0,0,0,.06); }
+  .pf-nav-inner {
+    width: 100%; 
+    max-width: var(--max-width); 
+    padding: 0 32px;
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between;
+    height: 52px;
+    margin: 0 auto;
+  }
+  .pf-logo {
+    font-family: var(--serif); 
+    font-size: 17px; 
+    letter-spacing: -.02em;
+    color: var(--ink); 
+    text-decoration: none; 
+    cursor: pointer; 
+    background: none; 
+    border: none;
+  }
+  .pf-nav-links { display: flex; gap: 28px; list-style: none; }
+  .pf-nav-links button {
+    font-size: 12px; 
+    font-weight: 400; 
+    letter-spacing: .12em; 
+    text-transform: uppercase;
+    color: var(--ink-m); 
+    background: none; 
+    border: none; 
+    cursor: pointer;
+    transition: color .2s; 
+    font-family: var(--sans); 
+    padding: 0;
+  }
+  .pf-nav-links button:hover { color: var(--blue); }
+  .pf-hamburger {
+    display: none; 
+    flex-direction: column; 
+    gap: 5px;
+    background: none; 
+    border: none; 
+    cursor: pointer; 
+    padding: 4px;
+  }
+  .pf-hamburger span {
+    display: block; 
+    width: 22px; 
+    height: 1.5px; 
+    background: var(--ink);
+    transition: transform .3s, opacity .3s;
+    transform-origin: center;
+  }
+  .pf-hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(4.5px, 4.5px); }
+  .pf-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .pf-hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(4.5px, -4.5px); }
+
+  /* ─── Mobile Menu ─── */
+  .pf-mobile-menu {
+    position: fixed; 
+    inset: 52px 0 0; 
+    z-index: 90;
+    background: var(--paper);
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 36px;
+    border-top: 1px solid var(--rule);
+  }
+  .pf-mobile-menu button {
+    font-family: var(--serif); 
+    font-size: 32px; 
+    letter-spacing: -.02em;
+    background: none; 
+    border: none; 
+    cursor: pointer; 
+    color: var(--ink);
+    transition: color .2s;
+  }
+  .pf-mobile-menu button:hover { color: var(--blue); }
+
+  /* ─── Hero Section ─── */
+  .pf-hero { 
+    padding-top: 52px; 
+    min-height: 100svh; 
+    display: flex; 
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+  }
+  .pf-dateline {
+    border-top: 3px solid var(--ink);
+    border-bottom: 1px solid var(--rule);
+    padding: 10px 0;
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    flex-wrap: wrap; 
+    gap: 6px;
+    width: 100%;
+  }
+  .pf-dateline-item { 
+    font-size: 11px; 
+    letter-spacing: .14em; 
+    text-transform: uppercase; 
+    color: var(--ink-m); 
+  }
+  .pf-dateline-item.accent { color: var(--blue); font-weight: 500; }
+
+  .pf-hero-body {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 0 48px;
+    align-items: start;
+    padding: 52px 0 56px;
+    flex: 1;
+    width: 100%;
+  }
+  .pf-kicker {
+    font-size: 11px; 
+    letter-spacing: .18em; 
+    text-transform: uppercase;
+    color: var(--blue); 
+    font-weight: 500; 
+    margin-bottom: 20px;
+  }
+  .pf-headline {
+    font-family: var(--serif);
+    font-size: clamp(52px, 6.5vw, 86px);
+    line-height: 1.0; 
+    letter-spacing: -.025em; 
+    color: var(--ink);
+    margin-bottom: 28px;
+    text-align: left;
+  }
+  .pf-headline em { font-style: italic; color: var(--blue); }
+  .pf-sub {
+    font-size: 15px; 
+    line-height: 1.8; 
+    color: var(--ink-m);
+    max-width: 400px; 
+    margin-bottom: 40px;
+  }
+  .pf-cta { display: flex; gap: 14px; flex-wrap: wrap; }
+  .pf-btn-primary {
+    display: inline-flex; 
+    align-items: center; 
+    gap: 8px;
+    background: var(--ink); 
+    color: var(--paper);
+    font-size: 12px; 
+    letter-spacing: .1em; 
+    text-transform: uppercase; 
+    font-weight: 500;
+    padding: 13px 26px; 
+    text-decoration: none; 
+    transition: background .2s;
+    font-family: var(--sans); 
+    border: none; 
+    cursor: pointer;
+  }
+  .pf-btn-primary:hover { background: var(--blue); }
+  .pf-btn-ghost {
+    display: inline-flex; 
+    align-items: center; 
+    gap: 8px;
+    border: 1px solid var(--rule); 
+    color: var(--ink);
+    font-size: 12px; 
+    letter-spacing: .1em; 
+    text-transform: uppercase; 
+    font-weight: 500;
+    padding: 13px 26px; 
+    text-decoration: none; 
+    transition: border-color .2s, color .2s;
+    font-family: var(--sans); 
+    background: none; 
+    cursor: pointer;
+  }
+  .pf-btn-ghost:hover { border-color: var(--blue); color: var(--blue); }
+
+  .pf-hero-photo {
+    width: 100%; 
+    aspect-ratio: 3/4; 
+    object-fit: cover;
+    filter: grayscale(10%);
+    border: 1px solid var(--rule);
+  }
+  .pf-photo-caption {
+    padding-top: 10px;
+    font-size: 11px; 
+    color: var(--ink-f); 
+    letter-spacing: .06em;
+    text-align: right; 
+    font-style: italic; 
+    font-family: var(--serif);
+  }
+
+  /* ─── Gallery ─── */
+  .pf-gallery { 
+    border-top: 1px solid var(--rule); 
+    padding: 32px 0 56px; 
+    width: 100%;
+  }
+  .pf-gallery-label {
+    font-size: 11px; 
+    letter-spacing: .16em; 
+    text-transform: uppercase;
+    color: var(--ink-m); 
+    margin-bottom: 14px;
+  }
+  .pf-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 5px;
+  }
+  .pf-gallery-item {
+    aspect-ratio: 1; 
+    overflow: hidden; 
+    cursor: pointer;
+    border: 1px solid var(--rule); 
+    transition: border-color .2s;
+  }
+  .pf-gallery-item:hover { border-color: var(--blue); }
+  .pf-gallery-item img {
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover;
+    transition: transform .5s;
+    display: block;
+  }
+  .pf-gallery-item:hover img { transform: scale(1.08); }
+
+  /* ─── Section Layout ─── */
+  .pf-section { 
+    padding: 80px 0; 
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .pf-section-rule { 
+    border: none; 
+    border-top: 3px solid var(--ink); 
+    width: 100%;
+  }
+  .pf-section-header {
+    display: flex; 
+    align-items: baseline; 
+    justify-content: space-between;
+    padding: 22px 0 40px;
+    width: 100%;
+  }
+  .pf-section-title {
+    font-family: var(--serif);
+    font-size: clamp(36px, 4.5vw, 54px);
+    letter-spacing: -.02em; 
+    line-height: 1;
+  }
+  .pf-section-num {
+    font-size: 11px; 
+    letter-spacing: .14em; 
+    text-transform: uppercase;
+    color: var(--ink-f); 
+    font-weight: 400;
+  }
+
+  /* ─── Tech Stack ─── */
+  .pf-tech-grid {
+    display: grid; 
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px; 
+    width: 100%;
+  }
+  .pf-tech-item {
+    background: var(--paper); 
+    padding: 40px 24px;
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 16px;
+    transition: background .2s; 
+    cursor: default;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+  }
+  .pf-tech-item:hover { 
+    background: var(--blue-dim); 
+    border-color: var(--blue);
+  }
+  .pf-tech-logo { width: 48px; height: 48px; object-fit: contain; }
+  .pf-tech-name {
+    font-size: 13px; 
+    letter-spacing: .12em; 
+    text-transform: uppercase;
+    font-weight: 500; 
+    color: var(--ink);
+  }
+  .pf-tech-desc { 
+    font-size: 13px; 
+    color: var(--ink-m); 
+    text-align: center; 
+    line-height: 1.65; 
+  }
+
+  /* ─── Projects Table ─── */
+  .pf-proj-table { 
+    width: 100%; 
+    border-collapse: collapse; 
+  }
+  .pf-proj-row {
+    border-top: 1px solid var(--rule);
+    cursor: pointer; 
+    transition: background .15s;
+  }
+  .pf-proj-row:last-child { border-bottom: 1px solid var(--rule); }
+  .pf-proj-row:hover { background: var(--blue-dim); }
+  .pf-proj-row td { padding: 22px 0; vertical-align: middle; }
+  .pf-proj-num { 
+    font-size: 12px; 
+    color: var(--ink-f); 
+    width: 44px; 
+    letter-spacing: .04em; 
+  }
+  .pf-proj-title {
+    font-family: var(--serif); 
+    font-size: clamp(18px, 2.2vw, 26px);
+    letter-spacing: -.01em; 
+    padding-right: 20px;
+  }
+  .pf-proj-year { 
+    font-size: 12px; 
+    color: var(--ink-m); 
+    width: 60px; 
+  }
+  .pf-proj-role { 
+    font-size: 12px; 
+    color: var(--ink-m); 
+    width: 200px; 
+  }
+  .pf-proj-status { width: 110px; text-align: right; }
+  .pf-badge {
+    display: inline-block;
+    font-size: 10px; 
+    letter-spacing: .12em; 
+    text-transform: uppercase; 
+    font-weight: 500;
+    padding: 5px 10px;
+  }
+  .pf-badge-done { background: #e8f5e9; color: #2e7d32; }
+  .pf-badge-wip  { background: #fff8e1; color: #e65100; }
+  .pf-proj-arrow { 
+    width: 36px; 
+    text-align: right; 
+    font-size: 18px; 
+    color: var(--ink-f); 
+  }
+  .pf-proj-row:hover .pf-proj-arrow { color: var(--blue); }
+
+  /* ─── Footer ─── */
+  .pf-footer {
+    border-top: 3px solid var(--ink); 
+    padding: 28px 0;
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    flex-wrap: wrap; 
+    gap: 16px;
+    width: 100%;
+  }
+  .pf-footer-name { 
+    font-family: var(--serif); 
+    font-size: 20px; 
+    letter-spacing: -.01em; 
+  }
+  .pf-footer-links { display: flex; gap: 20px; }
+  .pf-footer-links a {
+    font-size: 12px; 
+    letter-spacing: .1em; 
+    text-transform: uppercase;
+    color: var(--ink-m); 
+    text-decoration: none; 
+    transition: color .2s;
+  }
+  .pf-footer-links a:hover { color: var(--blue); }
+  .pf-footer-copy { 
+    font-size: 11px; 
+    color: var(--ink-f); 
+    margin: 0 auto;
+  }
+
+  /* ─── Lightbox ─── */
+  .pf-lightbox {
+    position: fixed; 
+    inset: 0; 
+    z-index: 300;
+    background: rgba(15,14,13,.94);
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    padding: 24px;
+  }
+  .pf-lightbox img {
+    max-width: 90vw; 
+    max-height: 88vh;
+    object-fit: contain; 
+    border: 1px solid var(--rule);
+  }
+  .pf-lightbox-close {
+    position: absolute; 
+    top: 20px; 
+    right: 24px;
+    background: none; 
+    border: 1px solid #555; 
+    color: #fff;
+    width: 40px; 
+    height: 40px; 
+    cursor: pointer; 
+    font-size: 20px;
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    transition: border-color .2s;
+  }
+  .pf-lightbox-close:hover { border-color: #fff; }
+
+  /* ─── Modal ─── */
+  .pf-modal-backdrop {
+    position: fixed; 
+    inset: 0; 
+    z-index: 200;
+    background: rgba(15,14,13,.8);
+    display: flex; 
+    align-items: flex-end; 
+    justify-content: center;
+  }
+  .pf-modal {
+    background: var(--paper);
+    width: 100%; 
+    max-width: 820px;
+    border-top: 3px solid var(--blue);
+    max-height: 90vh; 
+    overflow-y: auto;
+    margin: 0 auto;
+  }
+  .pf-modal-header {
+    padding: 24px 32px 20px;
+    border-bottom: 1px solid var(--rule);
+    display: flex; 
+    align-items: start; 
+    justify-content: space-between; 
+    gap: 16px;
+  }
+  .pf-modal-title { 
+    font-family: var(--serif); 
+    font-size: 28px; 
+    letter-spacing: -.02em; 
+  }
+  .pf-modal-meta { 
+    display: flex; 
+    gap: 10px; 
+    align-items: center; 
+    margin-top: 10px; 
+  }
+  .pf-modal-close {
+    background: none; 
+    border: 1px solid var(--rule); 
+    cursor: pointer;
+    width: 36px; 
+    height: 36px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    color: var(--ink-m); 
+    flex-shrink: 0; 
+    transition: border-color .2s, color .2s;
+  }
+  .pf-modal-close:hover { border-color: var(--blue); color: var(--blue); }
+  .pf-modal-body { 
+    display: grid; 
+    grid-template-columns: 240px 1fr; 
+  }
+  .pf-modal-video { 
+    border-right: 1px solid var(--rule); 
+    padding: 24px; 
+  }
+  .pf-modal-video video { 
+    width: 100%; 
+    border: 1px solid var(--rule); 
+  }
+  .pf-modal-video-caption { 
+    font-size: 11px; 
+    color: var(--ink-f); 
+    margin-top: 10px; 
+    letter-spacing: .06em; 
+  }
+  .pf-modal-info { padding: 24px 32px; }
+  .pf-modal-info p { 
+    font-size: 14px; 
+    line-height: 1.8; 
+    color: var(--ink-m); 
+    margin-bottom: 24px; 
+  }
+  .pf-modal-sublabel {
+    font-size: 10px; 
+    letter-spacing: .16em; 
+    text-transform: uppercase;
+    color: var(--ink-f); 
+    font-weight: 500; 
+    margin-bottom: 12px;
+  }
+  .pf-modal-features { list-style: none; margin-bottom: 24px; }
+  .pf-modal-features li {
+    font-size: 13px; 
+    color: var(--ink-m); 
+    line-height: 1.6;
+    padding: 8px 0; 
+    border-bottom: 1px solid var(--rule);
+    display: flex; 
+    gap: 12px;
+  }
+  .pf-modal-features li::before { 
+    content: '—'; 
+    color: var(--blue); 
+    flex-shrink: 0; 
+  }
+  .pf-modal-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pf-tag {
+    font-size: 11px; 
+    letter-spacing: .1em; 
+    text-transform: uppercase;
+    padding: 5px 12px; 
+    border: 1px solid var(--rule); 
+    color: var(--ink-m);
+  }
+  .pf-modal-footer {
+    padding: 20px 32px; 
+    border-top: 1px solid var(--rule);
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between;
+    background: var(--paper-2);
+  }
+  .pf-modal-footer-label { 
+    font-size: 12px; 
+    color: var(--ink-f); 
+    letter-spacing: .06em; 
+  }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 768px) {
+    .pf-container { padding: 0 20px; }
+    .pf-hero-body { grid-template-columns: 1fr; }
+    .pf-hero-sidebar { order: -1; }
+    .pf-hero-photo { aspect-ratio: 4/3; }
+    .pf-headline { font-size: 44px; }
+    .pf-gallery-grid { grid-template-columns: repeat(3, 1fr); }
+    .pf-gallery-item:nth-child(n+4) { display: none; }
+    .pf-tech-grid { grid-template-columns: repeat(2, 1fr); }
+    .pf-proj-role, .pf-proj-year { display: none; }
+    .pf-modal-body { grid-template-columns: 1fr; }
+    .pf-modal-video { 
+      border-right: none; 
+      border-bottom: 1px solid var(--rule); 
+    }
+    .pf-nav-links { display: none; }
+    .pf-hamburger { display: flex; }
+    .pf-dateline { display: none; }
+    .pf-footer { 
+      flex-direction: column; 
+      text-align: center;
+    }
+    .pf-footer-copy { margin: 0; }
+  }
+`;
+
+
+const Navigation = ({ scrolled, menuOpen, setMenuOpen, onNavigate }) => (
+  <>
+    <nav className={`pf-nav${scrolled ? ' scrolled' : ''}`}>
+      <div className="pf-nav-inner">
+        <button className="pf-logo" onClick={() => onNavigate('hero')}>
+          Jam Ardines
+        </button>
+        <ul className="pf-nav-links">
+          {NAV_ITEMS.map(([id, label]) => (
+            <li key={id}>
+              <button onClick={() => onNavigate(id)}>{label}</button>
+            </li>
+          ))}
+        </ul>
+        <button
+          className={`pf-hamburger${menuOpen ? ' open' : ''}`}
+          onClick={() => setMenuOpen((p) => !p)}
+          aria-label="Toggle menu"
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+      </div>
+    </nav>
+
+    <AnimatePresence>
+      {menuOpen && (
+        <motion.div
+          className="pf-mobile-menu"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          {NAV_ITEMS.map(([id, label]) => (
+            <button key={id} onClick={() => onNavigate(id)}>
+              {label}
+            </button>
+          ))}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  </>
+);
+
+const HeroSection = ({ onScrollToProjects, onOpenLightbox }) => (
+  <section id="hero" className="pf-hero">
+    <div className="pf-container">
+  
+      <motion.div
+        className="pf-hero-body"
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+      >
+        <div>
+          <p className="pf-kicker">Software Developer</p>
+          <h1 className="pf-headline">
+            Hi, I'm Jam a<br />
+            <em>Software Developer</em>
+            <br />
+          </h1>
+          <p className="pf-sub">
+            Third-year BSCS student at the University of Cebu. Passionate about
+            building reliable, user-friendly applications that solve real problems.
+          </p>
+          <div className="pf-cta">
+            <button className="pf-btn-primary" onClick={onScrollToProjects}>
+              View Projects ↓
+            </button>
+            <a
+              className="pf-btn-ghost"
+              href="https://github.com/jamardines-dev"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              GitHub ↗
+            </a>
+            <a
+              className="pf-btn-ghost"
+              href="https://www.linkedin.com/in/jam-ardines-33407b392/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              LinkedIn ↗
+            </a>
+          </div>
+        </div>
+
+        <div className="pf-hero-sidebar">
+          <img src={ProfilePic} alt="Jam Ardines" className="pf-hero-photo" />
+          <p className="pf-photo-caption">Open for Internships</p>
+        </div>
+      </motion.div>
+
+      <div className="pf-gallery">
+        <p className="pf-gallery-label">Gallery</p>
+        <div className="pf-gallery-grid">
+          {GALLERY_PHOTOS.map((photo, i) => (
+            <motion.div
+              key={photo.src}
+              className="pf-gallery-item"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4, delay: i * 0.05 }}
+              onClick={() => onOpenLightbox(photo.src)}
+            >
+              <img src={photo.src} alt={`Gallery ${i + 1}`} />
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+);
+
+const TechStackSection = () => (
+  <section id="techstack" className="pf-section">
+    <div className="pf-container">
+      <hr className="pf-section-rule" />
+      <div className="pf-section-header">
+        <h2 className="pf-section-title">Tech Stack</h2>
+        <span className="pf-section-num">02</span>
+      </div>
+      <div className="pf-tech-grid">
+        {SKILLS.map((skill, i) => (
+          <motion.div
+            key={skill.name}
+            className="pf-tech-item"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.5, delay: i * 0.1 }}
+          >
+            <img src={skill.logo} alt={skill.name} className="pf-tech-logo" />
+            <p className="pf-tech-name">{skill.name}</p>
+            <p className="pf-tech-desc">{skill.desc}</p>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  </section>
+);
+
+const ProjectsSection = ({ onOpenPaninda }) => (
+  <section id="projects" className="pf-section">
+    <div className="pf-container">
+      <hr className="pf-section-rule" />
+      <div className="pf-section-header">
+        <h2 className="pf-section-title">Projects</h2>
+        <span className="pf-section-num">03</span>
+      </div>
+
+      <table className="pf-proj-table">
+        <tbody>
+          {PROJECTS.map((project, i) => (
+            <motion.tr
+              key={project.id}
+              className="pf-proj-row"
+              onClick={() => project.id === 1 && onOpenPaninda()}
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.45, delay: i * 0.08 }}
+            >
+              <td className="pf-proj-num">{project.num}</td>
+              <td className="pf-proj-title">{project.title}</td>
+              <td className="pf-proj-year">{project.year}</td>
+              <td className="pf-proj-role">{project.role}</td>
+              <td className="pf-proj-status">
+                <span
+                  className={`pf-badge ${
+                    project.status === 'completed' ? 'pf-badge-done' : 'pf-badge-wip'
+                  }`}
+                >
+                  {project.status === 'completed' ? 'Completed' : 'In Progress'}
+                </span>
+              </td>
+              <td className="pf-proj-arrow">→</td>
+            </motion.tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+);
+
+const Footer = () => (
+  <footer className="pf-section" style={{ paddingTop: 0 }}>
+    <div className="pf-container">
+      <div className="pf-footer">
+        <div className="pf-footer-links" />
+        <p className="pf-footer-copy">
+          © {new Date().getFullYear()} Jam Ardines. All rights reserved.
+        </p>
+      </div>
+    </div>
+  </footer>
+);
+
+const Lightbox = ({ image, onClose }) => (
+  <AnimatePresence>
+    {image && (
+      <motion.div
+        className="pf-lightbox"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.22 }}
+        onClick={onClose}
+      >
+        <button className="pf-lightbox-close" onClick={onClose}>
+          ✕
+        </button>
+        <motion.img
+          src={image}
+          alt="Gallery view"
+          initial={{ scale: 0.88, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.88, opacity: 0 }}
+          transition={{ duration: 0.22 }}
+          onClick={(e) => e.stopPropagation()}
+        />
+      </motion.div>
+    )}
+  </AnimatePresence>
+);
+
+const PanindaModal = ({ isOpen, onClose }) => (
+  <AnimatePresence>
+    {isOpen && (
+      <motion.div
+        className="pf-modal-backdrop"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.22 }}
+        onClick={onClose}
+      >
+        <motion.div
+          className="pf-modal"
+          initial={{ y: '100%' }}
+          animate={{ y: 0 }}
+          exit={{ y: '100%' }}
+          transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div className="pf-modal-header">
+            <div>
+              <h3 className="pf-modal-title">Paninda Mobile</h3>
+              <div className="pf-modal-meta">
+                <span className="pf-badge pf-badge-done">Completed</span>
+                <span style={{ fontSize: 12, color: 'var(--ink-f)' }}>2025</span>
+              </div>
+            </div>
+            <button className="pf-modal-close" onClick={onClose}>
+              ✕
+            </button>
+          </div>
+
+          {/* Body */}
+          <div className="pf-modal-body">
+            <div className="pf-modal-video">
+              <video controls autoPlay muted playsInline>
+                <source src={PanindaDemo} type="video/mp4" />
+              </video>
+              <p className="pf-modal-video-caption">App demonstration</p>
+            </div>
+            <div className="pf-modal-info">
+              <p>
+                An all-in-one store assistant that simplifies business management
+                and keeps operations organized for small to medium-sized retail stores.
+              </p>
+              <p className="pf-modal-sublabel">Key Features</p>
+              <ul className="pf-modal-features">
+                {PANINDA_FEATURES.map((feature) => (
+                  <li key={feature}>{feature}</li>
+                ))}
+              </ul>
+              <p className="pf-modal-sublabel">Tech Stack</p>
+              <div className="pf-modal-tags">
+                {PANINDA_TAGS.map((tag) => (
+                  <span key={tag} className="pf-tag">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="pf-modal-footer">
+            <span className="pf-modal-footer-label">Frontend Developer</span>
+            <a
+              className="pf-btn-primary"
+              href="https://github.com/jamardines-dev/PanindaMobile_Frontend"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ fontSize: 12 }}
+            >
+              View on GitHub ↗
+            </a>
+          </div>
+        </motion.div>
+      </motion.div>
+    )}
+  </AnimatePresence>
+);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MAIN COMPONENT
+// ─────────────────────────────────────────────────────────────────────────────
+
+export default function Portfolio() {
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [panindaOpen, setPanindaOpen] = useState(false);
+  const [lightbox, setLightbox] = useState(null);
+
+  // Handle scroll effects
   useEffect(() => {
-    const check = () => { setIsMobile(window.innerWidth < 768); setStartIndex(0); };
-    check();
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
-  }, []);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
+    const onScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // Lock body scroll when modals are open
   useEffect(() => {
-    document.body.style.overflow = (showPanindaModal || lightboxImage || menuOpen) ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
-  }, [showPanindaModal, lightboxImage, menuOpen]);
+    const isLocked = panindaOpen || lightbox || menuOpen;
+    document.body.style.overflow = isLocked ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [panindaOpen, lightbox, menuOpen]);
 
-  const handlePrev  = () => setStartIndex(p => Math.max(p - 1, 0));
-  const handleNext  = () => setStartIndex(p => Math.min(p + 1, galleryPhotos.length - photosPerPage));
-  const goToSlide   = (i) => setStartIndex(i);
-
-  const scrollToSection = (id) => {
+  // Navigation handler
+  const scrollTo = (id) => {
     setMenuOpen(false);
     setTimeout(() => {
       document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -81,351 +1108,37 @@ export default function CleanMinimalPortfolio() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 flex flex-col items-center">
-      <style>{`
-        html { scroll-behavior: smooth; scroll-padding-top: 72px; }
-        * { box-sizing: border-box; }
-      `}</style>
+    <>
+      {/* Global Styles */}
+      <style>{FONTS}{CSS_STYLES}</style>
 
-      {/* ── HEADER ── */}
-      <header className={`fixed w-full top-0 left-0 z-50 flex justify-center transition-all duration-300 ${
-        scrolled ? 'bg-white/80 backdrop-blur-md shadow-sm' : 'bg-white'
-      }`}>
-        <div className="w-full max-w-[928px] px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between">
-          <div
-            className="text-sm font-medium tracking-wide cursor-pointer hover:text-blue-600 transition-colors"
-            onClick={() => scrollToSection('home')}
-          >
-            Jam Ardines
-          </div>
+      {/* Centered Layout Wrapper */}
+      <div className="pf-layout">
+        {/* Navigation */}
+        <Navigation
+          scrolled={scrolled}
+          menuOpen={menuOpen}
+          setMenuOpen={setMenuOpen}
+          onNavigate={scrollTo}
+        />
 
-          {/* Desktop nav */}
-          <nav className="hidden sm:flex gap-6 md:gap-8 text-sm">
-            <button onClick={() => scrollToSection('home')}      className="hover:text-blue-600 transition-colors">Home</button>
-            <button onClick={() => scrollToSection('techstack')} className="hover:text-blue-600 transition-colors">Tech Stack</button>
-            <button onClick={() => scrollToSection('projects')}  className="hover:text-blue-600 transition-colors">Projects</button>
-          </nav>
+        {/* Main Content */}
+        <main style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <HeroSection
+            onScrollToProjects={() => scrollTo('projects')}
+            onOpenLightbox={setLightbox}
+          />
+          <TechStackSection />
+          <ProjectsSection onOpenPaninda={() => setPanindaOpen(true)} />
+        </main>
 
-          {/* Hamburger */}
-          <button
-            className="sm:hidden flex flex-col justify-center items-center w-8 h-8 gap-[5px]"
-            onClick={() => setMenuOpen(p => !p)}
-            aria-label="Toggle menu"
-          >
-            <span className={`block w-5 h-0.5 bg-gray-800 transition-all duration-300 origin-center ${menuOpen ? 'rotate-45 translate-y-[7px]' : ''}`} />
-            <span className={`block w-5 h-0.5 bg-gray-800 transition-all duration-300 ${menuOpen ? 'opacity-0 scale-x-0' : ''}`} />
-            <span className={`block w-5 h-0.5 bg-gray-800 transition-all duration-300 origin-center ${menuOpen ? '-rotate-45 -translate-y-[7px]' : ''}`} />
-          </button>
-        </div>
-      </header>
+        {/* Footer */}
+        <Footer />
+      </div>
 
-      {/* Mobile full-screen menu */}
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div
-            className="fixed inset-0 z-40 bg-white flex flex-col items-center justify-center gap-10"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            {[['home','Home'],['techstack','Tech Stack'],['projects','Projects']].map(([id, label]) => (
-              <button key={id} onClick={() => scrollToSection(id)}
-                className="text-2xl font-light text-gray-800 hover:text-blue-600 transition-colors">
-                {label}
-              </button>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* ── HERO ── */}
-      <section
-        id="home"
-        className="w-full max-w-[928px] mx-auto px-4 sm:px-6 min-h-screen flex flex-col items-center justify-center pt-20 pb-12"
-      >
-        <motion.div
-          className="w-full"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          {/* Profile — side by side on sm+, stacked on mobile */}
-          <div className="flex flex-col sm:flex-row items-center sm:items-center gap-8 sm:gap-12 md:gap-16 mb-10 sm:mb-14 w-full">
-            <div className="flex-shrink-0">
-              <img
-                src={ProfilePic}
-                alt="Jam Ardines"
-                className="w-40 h-40 sm:w-56 sm:h-56 md:w-72 md:h-72 object-cover shadow-lg"
-              />
-            </div>
-            <div className="flex-1 text-center sm:text-left">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-light mb-4 sm:mb-6 leading-tight">
-                Hi, I'm Jam<br />
-                <span className="font-light">A</span>
-                <span className="text-blue-600"> Software Developer</span>
-              </h1>
-              <p className="text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed text-center sm:text-justify">
-                I am a third-year BSCS student at the University of Cebu and an aspiring
-                Software Developer, passionate about building reliable and user-friendly applications.
-              </p>
-            </div>
-          </div>
-
-          {/* ── GALLERY ── */}
-          <div className="w-full">
-            <div className="flex items-center justify-between mb-3 sm:mb-4">
-              <p className="text-[10px] sm:text-xs font-medium tracking-[0.2em] text-gray-400 uppercase">Gallery</p>
-              <div className="flex gap-1.5 sm:gap-2">
-                {Array.from({ length: totalDots }).map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => goToSlide(idx)}
-                    className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 ${
-                      idx === startIndex ? 'w-4 sm:w-6 bg-gray-800' : 'w-1.5 sm:w-2 bg-gray-300 hover:bg-gray-400'
-                    }`}
-                    aria-label={`Go to slide ${idx + 1}`}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div className="relative">
-              {/* Left arrow */}
-              <button
-                onClick={handlePrev} disabled={!canGoPrev}
-                className={`absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 sm:-translate-x-5 z-20 w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-white shadow-md border border-gray-100 flex items-center justify-center transition-all duration-300 ${
-                  canGoPrev ? 'opacity-100 hover:scale-110 cursor-pointer text-gray-700' : 'opacity-0 pointer-events-none'
-                }`}
-                aria-label="Previous"
-              >
-                <svg width="12" height="12" className="sm:w-[14px] sm:h-[14px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="15 18 9 12 15 6" />
-                </svg>
-              </button>
-
-              <div className="flex gap-2 sm:gap-3 md:gap-4 overflow-hidden">
-                <AnimatePresence mode="popLayout">
-                  {visiblePhotos.map((photo, idx) => (
-                    <motion.div
-                      key={photo.src} layout
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                      transition={{ duration: 0.35, delay: idx * 0.05 }}
-                      className="flex-1 min-w-0 aspect-square overflow-hidden cursor-pointer"
-                      whileHover={{ y: -3, scale: 1.02 }}
-                      onClick={() => setLightboxImage(photo.src)}
-                    >
-                      <img src={photo.src} alt="Gallery" className="w-full h-full object-cover transition-transform duration-500 hover:scale-110" />
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-              </div>
-
-              {/* Right arrow */}
-              <button
-                onClick={handleNext} disabled={!canGoNext}
-                className={`absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 sm:translate-x-5 z-20 w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-white shadow-md border border-gray-100 flex items-center justify-center transition-all duration-300 ${
-                  canGoNext ? 'opacity-100 hover:scale-110 cursor-pointer text-gray-700' : 'opacity-0 pointer-events-none'
-                }`}
-                aria-label="Next"
-              >
-                <svg width="12" height="12" className="sm:w-[14px] sm:h-[14px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="9 18 15 12 9 6" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </motion.div>
-      </section>
-
-      {/* ── TECH STACK ── */}
-      <section id="techstack" className="w-full border-t border-gray-100 py-20 sm:py-28 md:py-36">
-        <div className="w-full max-w-[928px] mx-auto px-4 sm:px-6 text-center">
-          <h2 className="mb-8 sm:mb-10 text-gray-500 text-xs sm:text-sm tracking-widest uppercase">Tech Stack</h2>
-          <div className="flex gap-6 sm:gap-8 justify-center flex-wrap">
-            {skills.map((s, i) => (
-              <motion.div key={i} className="flex items-center gap-2 sm:gap-3 cursor-pointer"
-                whileHover={{ scale: 1.05, y: -2 }} transition={{ duration: 0.2 }}>
-                <span className="text-base sm:text-lg font-medium text-gray-700">{s.name}</span>
-                <img src={s.logo} className="w-9 h-9 sm:w-12 sm:h-12 object-contain" alt={s.name} />
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── PROJECTS ── */}
-      <section id="projects" className="w-full border-t border-gray-100 py-20 sm:py-28 md:py-36">
-        <div className="w-full max-w-[928px] mx-auto px-4 sm:px-6 text-center">
-          <h2 className="mb-8 sm:mb-12 text-gray-500 text-xs sm:text-sm tracking-widest uppercase">Projects</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
-            {projects.map((p, idx) => (
-              <motion.div
-                key={p.id}
-                className="group p-5 sm:p-6 border border-gray-100 rounded-lg cursor-pointer hover:shadow-lg hover:border-gray-200 transition-all duration-300 text-center"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                onClick={() => p.id === 1 && setShowPanindaModal(true)}
-                whileHover={{ y: -4 }}
-              >
-                <h3 className="text-base sm:text-lg md:text-xl font-medium text-gray-900 group-hover:text-blue-600 transition-colors">
-                  {p.title}
-                </h3>
-                {p.status === 'in-progress' && (
-                  <div className="flex items-center justify-center gap-2 mt-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                    <span className="text-xs text-amber-600 font-medium">In Progress</span>
-                  </div>
-                )}
-              </motion.div>
-            ))}
-          </div>
-
-          <div className="flex justify-center gap-5 sm:gap-6 mt-10 sm:mt-12">
-            <motion.a href="https://www.linkedin.com/in/jam-ardines-33407b392/" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.2 }}>
-              <img src={linkedinLogo} alt="LinkedIn" className="w-7 h-7 sm:w-8 sm:h-8 object-contain" />
-            </motion.a>
-            <motion.a href="https://github.com/jamardines-dev" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.2 }}>
-              <img src={githubLogo} alt="GitHub" className="w-7 h-7 sm:w-8 sm:h-8 object-contain" />
-            </motion.a>
-          </div>
-        </div>
-      </section>
-
-      {/* ── FOOTER ── */}
-      <footer className="w-full py-6 sm:py-8 border-t border-gray-100">
-        <p className="text-center text-xs text-gray-400">
-          © {new Date().getFullYear()} Jam Ardines. All Rights Reserved.
-        </p>
-      </footer>
-
-      {/* ── LIGHTBOX ── */}
-      <AnimatePresence>
-        {lightboxImage && (
-          <motion.div
-            className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            onClick={() => setLightboxImage(null)}
-          >
-            <motion.div
-              className="relative w-full max-w-3xl max-h-[90vh] flex items-center justify-center"
-              initial={{ scale: 0.85, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.85, opacity: 0 }}
-              transition={{ duration: 0.25, ease: 'easeOut' }}
-              onClick={e => e.stopPropagation()}
-            >
-              <button
-                onClick={() => setLightboxImage(null)}
-                className="absolute -top-10 sm:-top-12 right-0 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-              </button>
-              <img src={lightboxImage} alt="Gallery view" className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl" />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* ── PANINDA MODAL ── */}
-      <AnimatePresence>
-        {showPanindaModal && (
-          <motion.div
-            className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            onClick={() => setShowPanindaModal(false)}
-          >
-            <motion.div
-              className="bg-white rounded-t-2xl sm:rounded-2xl border border-gray-200 shadow-2xl w-full sm:max-w-[800px] sm:mx-4 max-h-[92vh] flex flex-col"
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
-              onClick={e => e.stopPropagation()}
-            >
-              {/* Drag handle — mobile only */}
-              <div className="sm:hidden flex justify-center pt-3 pb-0.5 flex-shrink-0">
-                <div className="w-10 h-1 rounded-full bg-gray-200" />
-              </div>
-
-              {/* Header */}
-              <div className="flex items-start justify-between gap-3 px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-100 flex-shrink-0">
-                <div className="flex flex-col gap-1.5">
-                  <h2 className="text-base sm:text-lg font-medium text-gray-900">Paninda Mobile</h2>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-green-50 text-green-700 border border-green-100">Completed</span>
-                    <span className="text-xs text-gray-400">2025</span>
-                  </div>
-                </div>
-                <button
-                  className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition flex-shrink-0"
-                  onClick={() => setShowPanindaModal(false)}
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-                  </svg>
-                </button>
-              </div>
-
-              {/* Body */}
-              <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 p-4 sm:p-6 overflow-y-auto flex-1">
-                <div className="flex-shrink-0 w-full sm:w-60 md:w-72">
-                  <div className="rounded-xl overflow-hidden border border-gray-200 bg-gray-50">
-                    <video className="w-full h-auto object-contain" controls autoPlay muted playsInline>
-                      <source src={PanindaDemo} type="video/mp4" />
-                    </video>
-                  </div>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm text-gray-600 leading-relaxed mb-4 sm:mb-5">
-                    An all-in-one store assistant that simplifies business management and keeps operations organized for small to medium-sized retail stores.
-                  </p>
-                  <p className="text-xs font-semibold text-gray-400 tracking-wider uppercase mb-2 sm:mb-3">Key Features</p>
-                  <ul className="space-y-1.5 sm:space-y-2 mb-4 sm:mb-5">
-                    {[
-                      'Real-time inventory tracking with low-stock alerts',
-                      'Secure transaction logging and permanent sales history',
-                      'Business insights and reports for data-driven decisions',
-                      'Full operator control with strong data security',
-                    ].map((f, i) => (
-                      <li key={i} className="flex items-start gap-2 sm:gap-3 text-sm text-gray-600">
-                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0 mt-[7px]" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                  <p className="text-xs font-semibold text-gray-400 tracking-wider uppercase mb-2 sm:mb-3">Tech Stack</p>
-                  <div className="flex gap-2 flex-wrap">
-                    {['Kotlin', 'Spring Boot', 'PostgreSQL'].map(t => (
-                      <span key={t} className="text-xs px-3 py-1.5 rounded-lg bg-gray-100 text-gray-600 font-medium">{t}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Footer */}
-              <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-t border-gray-100 bg-gray-50/50 flex-shrink-0">
-                <span className="text-xs text-gray-400">Frontend Developer</span>
-                <a
-                  href="http://github.com/jamardines-dev/PanindaMobile_Frontend"
-                  target="_blank" rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-xs sm:text-sm px-3 sm:px-4 py-2 rounded-lg bg-gray-900 text-white hover:bg-gray-800 transition"
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                  </svg>
-                  View on GitHub
-                </a>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+      {/* Modals & Overlays (Outside layout to cover full screen) */}
+      <Lightbox image={lightbox} onClose={() => setLightbox(null)} />
+      <PanindaModal isOpen={panindaOpen} onClose={() => setPanindaOpen(false)} />
+    </>
   );
 }
