@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -11,7 +11,7 @@ import kotlinLogo from './assets/kotlin.png';
 import reactLogo from './assets/react.png';
 import dockerLogo from './assets/Docker.png';
 import pythonLogo from './assets/python.png';
-
+import resumePDF from './assets/resume.pdf';
 import PanindaDemo from './assets/projects/panindamobile.mp4';
 
 import photo1 from './assets/gallery/photo1.jpg';
@@ -49,16 +49,25 @@ const SKILLS = [
 ];
 
 const PROJECTS = [
-  { id: 1, num: '01', title: 'Paninda Mobile',    year: '2025', role: 'Frontend Developer',   status: 'completed' },
-  { id: 2, num: '02', title: 'AlgoSensei',        year: '2025', role: '',                     status: 'in-progress' },
-  { id: 3, num: '03', title: 'Masala Restaurant', year: '2025', role: 'Full-Stack Developer', status: 'completed' },
-  { id: 4, num: '04', title: 'Portfolio CMS',     year: '2025', role: 'Solo Developer',       status: 'completed' },
+  { id: 1, num: '01', title: 'Paninda Mobile',    year: '2025', role: 'Frontend Developer',   status: 'completed', clickable: true },
+  { id: 2, num: '02', title: 'AlgoSensei',        year: '2025', role: 'Solo Developer',       status: 'in-progress', clickable: false },
+  { id: 3, num: '03', title: 'Masala Restaurant', year: '2025', role: 'Full-Stack Developer', status: 'completed', clickable: false },
+  { id: 4, num: '04', title: 'Portfolio CMS',     year: '2025', role: 'Solo Developer',       status: 'completed', clickable: false },
 ];
 
 const NAV_ITEMS = [
   ['hero',      'Home'],
-  ['techstack', 'Tech Stack'],
+  ['about',     'About'],
+  ['techstack', 'Stack'],
   ['projects',  'Projects'],
+  ['contact',   'Contact'],
+];
+
+const ABOUT_STATS = [
+  { num: '3+',   label: 'Years Coding' },
+  { num: '4',    label: 'Projects Built' },
+  { num: '5',    label: 'Technologies' },
+  { num: '2025', label: 'Target Internship' },
 ];
 
 const PANINDA_FEATURES = [
@@ -70,6 +79,42 @@ const PANINDA_FEATURES = [
 
 const PANINDA_TAGS = ['Kotlin', 'Spring Boot', 'PostgreSQL'];
 
+const CONTACT_ITEMS = [
+  {
+    label: 'Email',
+    value: 'jamardines16@gmail.com',
+    href: 'mailto:jam.ardines@example.com',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ width: 14, height: 14 }}>
+        <rect x="2" y="4" width="20" height="16" rx="2" />
+        <polyline points="2,4 12,13 22,4" />
+      </svg>
+    ),
+  },
+  {
+    label: 'GitHub',
+    value: 'github.com/jamardines-dev',
+    href: 'https://github.com/jamardines-dev',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ width: 14, height: 14 }}>
+        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+      </svg>
+    ),
+  },
+  {
+    label: 'LinkedIn',
+    value: 'linkedin.com/in/jam-ardines',
+    href: 'https://www.linkedin.com/in/jam-ardines-33407b392/',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ width: 14, height: 14 }}>
+        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+        <rect x="2" y="9" width="4" height="12" />
+        <circle cx="4" cy="4" r="2" />
+      </svg>
+    ),
+  },
+];
+
 // ─────────────────────────────────────────────────────────────────────────────
 // STYLES
 // ─────────────────────────────────────────────────────────────────────────────
@@ -79,7 +124,6 @@ const FONTS = `
 `;
 
 const CSS_STYLES = `
-  /* ─── CSS Variables ─── */
   :root {
     --ink:       #0f0e0d;
     --ink-m:     #6b6760;
@@ -94,7 +138,6 @@ const CSS_STYLES = `
     --max-width: 960px;
   }
 
-  /* ─── Reset & Base ─── */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; scroll-padding-top: 56px; }
   body {
@@ -151,7 +194,7 @@ const CSS_STYLES = `
     background: none;
     border: none;
   }
-  .pf-nav-links { display: flex; gap: 28px; list-style: none; }
+  .pf-nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
   .pf-nav-links button {
     font-size: 12px;
     font-weight: 400;
@@ -160,12 +203,16 @@ const CSS_STYLES = `
     color: var(--ink-m);
     background: none;
     border: none;
+    border-bottom: 1.5px solid transparent;
     cursor: pointer;
-    transition: color .2s;
+    transition: color .2s, border-color .2s;
     font-family: var(--sans);
-    padding: 0;
+    padding: 4px 0;
   }
   .pf-nav-links button:hover { color: var(--blue); }
+  .pf-nav-links button.active { color: var(--blue); border-bottom-color: var(--blue); }
+
+  /* ─── Hamburger ─── */
   .pf-hamburger {
     display: none;
     flex-direction: column;
@@ -269,7 +316,7 @@ const CSS_STYLES = `
     margin-bottom: 24px;
     text-align: left;
   }
-  .pf-headline em { font-style: normal; color: var(--blue); font-size: 55px; }
+  .pf-headline em { font-style: normal; color: var(--blue); font-size: clamp(16px, 5.8vw, 55px); }
   .pf-sub {
     font-size: 15px;
     line-height: 1.8;
@@ -298,6 +345,24 @@ const CSS_STYLES = `
     cursor: pointer;
   }
   .pf-btn-primary:hover { background: var(--blue); }
+  .pf-btn-resume {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--blue);
+    color: #fff;
+    font-size: 12px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    font-weight: 500;
+    padding: 13px 26px;
+    text-decoration: none;
+    transition: opacity .2s;
+    font-family: var(--sans);
+    border: none;
+    cursor: pointer;
+  }
+  .pf-btn-resume:hover { opacity: .85; }
   .pf-btn-ghost {
     display: inline-flex;
     align-items: center;
@@ -383,6 +448,45 @@ const CSS_STYLES = `
     line-height: 1;
   }
 
+  /* ─── About ─── */
+  .pf-about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    width: 100%;
+    align-items: start;
+  }
+  .pf-about-text {
+    font-size: 15px;
+    line-height: 1.9;
+    color: var(--ink-m);
+  }
+  .pf-about-text p + p { margin-top: 18px; }
+  .pf-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .pf-stat {
+    background: var(--paper-2);
+    border: 1px solid var(--rule);
+    padding: 24px 20px;
+  }
+  .pf-stat-num {
+    font-family: var(--serif);
+    font-size: 32px;
+    color: var(--blue);
+    letter-spacing: -.02em;
+    line-height: 1;
+  }
+  .pf-stat-label {
+    font-size: 11px;
+    color: var(--ink-m);
+    letter-spacing: .08em;
+    margin-top: 6px;
+    text-transform: uppercase;
+  }
+
   /* ─── Tech Stack ─── */
   .pf-tech-grid {
     display: grid;
@@ -425,11 +529,11 @@ const CSS_STYLES = `
   .pf-proj-table { width: 100%; border-collapse: collapse; }
   .pf-proj-row {
     border-top: 1px solid var(--rule);
-    cursor: pointer;
     transition: background .15s;
   }
+  .pf-proj-row.clickable { cursor: pointer; }
   .pf-proj-row:last-child { border-bottom: 1px solid var(--rule); }
-  .pf-proj-row:hover { background: var(--blue-dim); }
+  .pf-proj-row.clickable:hover { background: var(--blue-dim); }
   .pf-proj-row td { padding: 22px 0; vertical-align: middle; }
   .pf-proj-num { font-size: 12px; color: var(--ink-f); width: 44px; letter-spacing: .04em; }
   .pf-proj-title {
@@ -440,9 +544,11 @@ const CSS_STYLES = `
   }
   .pf-proj-year  { font-size: 12px; color: var(--ink-m); width: 60px; }
   .pf-proj-role  { font-size: 12px; color: var(--ink-m); width: 200px; }
-  .pf-proj-status { width: 110px; text-align: right; }
+  .pf-proj-status { width: 120px; text-align: right; }
   .pf-badge {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     font-size: 10px;
     letter-spacing: .12em;
     text-transform: uppercase;
@@ -451,12 +557,87 @@ const CSS_STYLES = `
   }
   .pf-badge-done { background: #e8f5e9; color: #2e7d32; }
   .pf-badge-wip  { background: #fff8e1; color: #e65100; }
+  .pf-badge-wip-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #e65100;
+    display: inline-block;
+    animation: pulse 1.8s ease-in-out infinite;
+    flex-shrink: 0;
+  }
   .pf-proj-arrow { width: 36px; text-align: right; font-size: 18px; color: var(--ink-f); }
-  .pf-proj-row:hover .pf-proj-arrow { color: var(--blue); }
+  .pf-proj-row.clickable:hover .pf-proj-arrow { color: var(--blue); }
+
+  /* ─── Contact ─── */
+  .pf-contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    width: 100%;
+    align-items: start;
+  }
+  .pf-contact-intro {
+    font-size: 15px;
+    line-height: 1.9;
+    color: var(--ink-m);
+    margin-bottom: 28px;
+  }
+  .pf-contact-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--rule);
+    text-decoration: none;
+    color: inherit;
+    transition: background .15s;
+  }
+
+  .pf-contact-item:hover .pf-contact-val { color: var(--blue); }
+  .pf-contact-icon {
+    width: 34px;
+    height: 34px;
+    background: var(--blue-dim);
+    border: 1px solid rgba(26,72,196,.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--blue);
+  }
+  .pf-contact-label {
+    font-size: 10px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-f);
+    margin-bottom: 2px;
+  }
+  .pf-contact-val {
+    font-size: 13px;
+    color: var(--ink);
+    transition: color .2s;
+  }
+  .pf-avail-box {
+    background: var(--blue-dim);
+    border: 1px solid rgba(26,72,196,.2);
+    padding: 32px;
+  }
+  .pf-avail-title {
+    font-family: var(--serif);
+    font-size: 24px;
+    letter-spacing: -.02em;
+    margin-bottom: 14px;
+  }
+  .pf-avail-text {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--ink-m);
+    margin-bottom: 24px;
+  }
 
   /* ─── Footer ─── */
   .pf-footer {
-    border-top: 3px solid var(--ink);
     padding: 28px 0;
     display: flex;
     align-items: center;
@@ -465,7 +646,7 @@ const CSS_STYLES = `
     gap: 16px;
     width: 100%;
   }
-  .pf-footer-links { display: flex; gap: 20px; }
+  .pf-footer-links { display: flex; gap: 20px; align-items: center; }
   .pf-footer-links a {
     font-size: 12px;
     letter-spacing: .1em;
@@ -475,7 +656,22 @@ const CSS_STYLES = `
     transition: color .2s;
   }
   .pf-footer-links a:hover { color: var(--blue); }
-  .pf-footer-copy { font-size: 11px; color: var(--ink-f); margin: 0 auto; }
+  .pf-footer-copy { font-size: 11px; color: var(--ink-f); }
+  .pf-back-top {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--rule);
+    background: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--ink-m);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color .2s, color .2s;
+    font-family: var(--sans);
+  }
+  .pf-back-top:hover { border-color: var(--blue); color: var(--blue); }
 
   /* ─── Lightbox ─── */
   .pf-lightbox {
@@ -596,6 +792,27 @@ const CSS_STYLES = `
   }
   .pf-modal-footer-label { font-size: 12px; color: var(--ink-f); letter-spacing: .06em; }
 
+  /* ─── Scroll-to-top floating btn ─── */
+  .pf-scroll-top {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    z-index: 99;
+    width: 42px;
+    height: 42px;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .2s;
+    font-family: var(--sans);
+  }
+  .pf-scroll-top:hover { background: var(--blue); }
+
   /* ─── Responsive ─── */
   @media (max-width: 768px) {
     .pf-container { padding: 0 20px; }
@@ -608,12 +825,14 @@ const CSS_STYLES = `
     .pf-gallery-item:nth-child(n+4) { display: none; }
     .pf-tech-grid { grid-template-columns: repeat(2, 1fr); }
     .pf-proj-role, .pf-proj-year { display: none; }
+    .pf-about-grid { grid-template-columns: 1fr; gap: 32px; }
+    .pf-contact-grid { grid-template-columns: 1fr; gap: 32px; }
     .pf-modal-body { grid-template-columns: 1fr; }
     .pf-modal-video { border-right: none; border-bottom: 1px solid var(--rule); }
     .pf-nav-links { display: none; }
     .pf-hamburger { display: flex; }
-    .pf-footer { flex-direction: column; text-align: center; }
-    .pf-footer-copy { margin: 0; }
+    .pf-footer { flex-direction: column; align-items: flex-start; }
+    .pf-scroll-top { bottom: 20px; right: 20px; }
   }
 `;
 
@@ -621,7 +840,7 @@ const CSS_STYLES = `
 // COMPONENTS
 // ─────────────────────────────────────────────────────────────────────────────
 
-const Navigation = ({ scrolled, menuOpen, setMenuOpen, onNavigate }) => (
+const Navigation = ({ scrolled, menuOpen, setMenuOpen, onNavigate, activeSection }) => (
   <>
     <nav className={`pf-nav${scrolled ? ' scrolled' : ''}`}>
       <div className="pf-nav-inner">
@@ -631,7 +850,12 @@ const Navigation = ({ scrolled, menuOpen, setMenuOpen, onNavigate }) => (
         <ul className="pf-nav-links">
           {NAV_ITEMS.map(([id, label]) => (
             <li key={id}>
-              <button onClick={() => onNavigate(id)}>{label}</button>
+              <button
+                onClick={() => onNavigate(id)}
+                className={activeSection === id ? 'active' : ''}
+              >
+                {label}
+              </button>
             </li>
           ))}
         </ul>
@@ -672,7 +896,6 @@ const HeroSection = ({ onScrollToProjects, onOpenLightbox }) => (
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        {/* Left — Text */}
         <div>
           <div className="pf-internship-badge">Open for Internships</div>
           <h1 className="pf-headline">
@@ -706,13 +929,11 @@ const HeroSection = ({ onScrollToProjects, onOpenLightbox }) => (
           </div>
         </div>
 
-        {/* Right — Photo */}
         <div className="pf-hero-sidebar">
           <img src={ProfilePic} alt="Jam Ardines" className="pf-hero-photo" />
         </div>
       </motion.div>
 
-      {/* Gallery */}
       <div className="pf-gallery">
         <p className="pf-gallery-label">Gallery</p>
         <div className="pf-gallery-grid">
@@ -726,6 +947,57 @@ const HeroSection = ({ onScrollToProjects, onOpenLightbox }) => (
               onClick={() => onOpenLightbox(photo.src)}
             >
               <img src={photo.src} alt={`Gallery ${i + 1}`} />
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+);
+
+const AboutSection = () => (
+  <section id="about" className="pf-section">
+    <div className="pf-container">
+      <div className="pf-section-header">
+        <h2 className="pf-section-title">About</h2>
+      </div>
+      <div className="pf-about-grid">
+        <motion.div
+          className="pf-about-text"
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6 }}
+        >
+          <p>
+            I'm a third-year Computer Science student at the University of Cebu,
+            passionate about building software that's both functional and
+            thoughtfully designed.
+          </p>
+          <p>
+            My focus is on mobile and full-stack development. I enjoy working
+            across the stack — from designing clean UI in Kotlin and React to
+            building reliable backends with Spring Boot and PostgreSQL.
+          </p>
+          <p>
+            I'm actively looking for an internship where I can contribute to
+            real products, learn from experienced engineers, and sharpen my
+            craft in a professional environment.
+          </p>
+        </motion.div>
+
+        <div className="pf-stats">
+          {ABOUT_STATS.map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              className="pf-stat"
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.45, delay: i * 0.08 }}
+            >
+              <div className="pf-stat-num">{stat.num}</div>
+              <div className="pf-stat-label">{stat.label}</div>
             </motion.div>
           ))}
         </div>
@@ -771,7 +1043,7 @@ const ProjectsSection = ({ onOpenPaninda }) => (
           {PROJECTS.map((project, i) => (
             <motion.tr
               key={project.id}
-              className="pf-proj-row"
+              className={`pf-proj-row${project.clickable ? ' clickable' : ''}`}
               onClick={() => project.id === 1 && onOpenPaninda()}
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -783,11 +1055,18 @@ const ProjectsSection = ({ onOpenPaninda }) => (
               <td className="pf-proj-year">{project.year}</td>
               <td className="pf-proj-role">{project.role}</td>
               <td className="pf-proj-status">
-                <span className={`pf-badge ${project.status === 'completed' ? 'pf-badge-done' : 'pf-badge-wip'}`}>
-                  {project.status === 'completed' ? 'Completed' : 'In Progress'}
-                </span>
+                {project.status === 'completed' ? (
+                  <span className="pf-badge pf-badge-done">Completed</span>
+                ) : (
+                  <span className="pf-badge pf-badge-wip">
+                    <span className="pf-badge-wip-dot" />
+                    In Progress
+                  </span>
+                )}
               </td>
-              <td className="pf-proj-arrow">→</td>
+              <td className="pf-proj-arrow">
+                {project.clickable ? '→' : ''}
+              </td>
             </motion.tr>
           ))}
         </tbody>
@@ -796,14 +1075,75 @@ const ProjectsSection = ({ onOpenPaninda }) => (
   </section>
 );
 
-const Footer = () => (
+const ContactSection = () => (
+  <section id="contact" className="pf-section">
+    <div className="pf-container">
+      <div className="pf-section-header">
+        <h2 className="pf-section-title">Contact</h2>
+      </div>
+      <div className="pf-contact-grid">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6 }}
+        >
+          <p className="pf-contact-intro">
+            I'm currently open to internship opportunities. If you have a role
+            that could be a good fit, feel free to reach out directly.
+          </p>
+          {CONTACT_ITEMS.map((item) => (
+            <a
+              key={item.label}
+              className="pf-contact-item"
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <div className="pf-contact-icon">{item.icon}</div>
+              <div>
+                <div className="pf-contact-label">{item.label}</div>
+                <div className="pf-contact-val">{item.value}</div>
+              </div>
+            </a>
+          ))}
+        </motion.div>
+
+        <motion.div
+          className="pf-avail-box"
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6, delay: 0.15 }}
+        >
+          <h3 className="pf-avail-title">Available for Internship</h3>
+          <p className="pf-avail-text">
+            Looking for a software development internship where I can contribute
+            to real products and grow as an engineer. Open to on-site, hybrid,
+            or remote roles in Cebu or anywhere in the Philippines.
+          </p>
+          <a
+            className="pf-btn-resume"
+            href={resumePDF}
+            download="resume.pdf"
+
+          >
+            Download Resume ↓
+          </a>
+        </motion.div>
+      </div>
+    </div>
+  </section>
+);
+
+const Footer = ({ onScrollToTop }) => (
   <footer className="pf-section" style={{ paddingTop: 0 }}>
     <div className="pf-container">
       <div className="pf-footer">
-        <div className="pf-footer-links" />
         <p className="pf-footer-copy">
           © {new Date().getFullYear()} Jam Ardines. All rights reserved.
         </p>
+        <button className="pf-back-top" onClick={onScrollToTop} aria-label="Back to top">↑</button>
       </div>
     </div>
   </footer>
@@ -915,17 +1255,43 @@ const PanindaModal = ({ isOpen, onClose }) => (
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function Portfolio() {
-  const [scrolled,    setScrolled]    = useState(false);
-  const [menuOpen,    setMenuOpen]    = useState(false);
-  const [panindaOpen, setPanindaOpen] = useState(false);
-  const [lightbox,    setLightbox]    = useState(null);
+  const [scrolled,      setScrolled]      = useState(false);
+  const [menuOpen,      setMenuOpen]      = useState(false);
+  const [panindaOpen,   setPanindaOpen]   = useState(false);
+  const [lightbox,      setLightbox]      = useState(null);
+  const [activeSection, setActiveSection] = useState('hero');
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
+  // Scroll tracking
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 10);
+      setShowScrollTop(window.scrollY > 400);
+    };
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // Active section via IntersectionObserver
+  useEffect(() => {
+    const sectionIds = NAV_ITEMS.map(([id]) => id);
+    const observers = [];
+
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const obs = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) setActiveSection(id); },
+        { rootMargin: '-40% 0px -55% 0px' }
+      );
+      obs.observe(el);
+      observers.push(obs);
+    });
+
+    return () => observers.forEach((o) => o.disconnect());
+  }, []);
+
+  // Body scroll lock
   useEffect(() => {
     document.body.style.overflow = (panindaOpen || lightbox || menuOpen) ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
@@ -938,6 +1304,8 @@ export default function Portfolio() {
     }, 150);
   };
 
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
   return (
     <>
       <style>{FONTS}{CSS_STYLES}</style>
@@ -948,6 +1316,7 @@ export default function Portfolio() {
           menuOpen={menuOpen}
           setMenuOpen={setMenuOpen}
           onNavigate={scrollTo}
+          activeSection={activeSection}
         />
 
         <main style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -955,12 +1324,31 @@ export default function Portfolio() {
             onScrollToProjects={() => scrollTo('projects')}
             onOpenLightbox={setLightbox}
           />
+          <AboutSection />
           <TechStackSection />
           <ProjectsSection onOpenPaninda={() => setPanindaOpen(true)} />
+          <ContactSection />
         </main>
 
-        <Footer />
+        <Footer onScrollToTop={scrollToTop} />
       </div>
+
+      {/* Floating scroll-to-top */}
+      <AnimatePresence>
+        {showScrollTop && (
+          <motion.button
+            className="pf-scroll-top"
+            onClick={scrollToTop}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 16 }}
+            transition={{ duration: 0.2 }}
+            aria-label="Back to top"
+          >
+            ↑
+          </motion.button>
+        )}
+      </AnimatePresence>
 
       <Lightbox image={lightbox} onClose={() => setLightbox(null)} />
       <PanindaModal isOpen={panindaOpen} onClose={() => setPanindaOpen(false)} />
