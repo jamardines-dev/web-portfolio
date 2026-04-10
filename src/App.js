@@ -1,9 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-// ─────────────────────────────────────────────────────────────────────────────
-// ASSET IMPORTS
-// ─────────────────────────────────────────────────────────────────────────────
 
 import ProfilePic from './assets/pp.jpeg';
 import javaLogo from './assets/java.png';
@@ -24,9 +20,6 @@ import photo7 from './assets/gallery/photo7.jpg';
 import photo8 from './assets/gallery/photo8.jpg';
 import photo9 from './assets/gallery/photo9.jpg';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// DATA CONSTANTS
-// ─────────────────────────────────────────────────────────────────────────────
 
 const GALLERY_PHOTOS = [
   { src: photo1 },
@@ -49,10 +42,10 @@ const SKILLS = [
 ];
 
 const PROJECTS = [
-  { id: 1, num: '01', title: 'Paninda Mobile',    year: '2025', role: 'Frontend Developer',   status: 'completed', clickable: true },
-  { id: 2, num: '02', title: 'AlgoSensei',        year: '2025', role: 'Solo Developer',       status: 'in-progress', clickable: false },
-  { id: 3, num: '03', title: 'Masala Restaurant', year: '2025', role: 'Full-Stack Developer', status: 'completed', clickable: false },
-  { id: 4, num: '04', title: 'Portfolio CMS',     year: '2025', role: 'Solo Developer',       status: 'completed', clickable: false },
+  { id: 1, num: '01', title: 'Paninda Mobile', role: 'Frontend Developer',   status: 'completed', clickable: true },
+  { id: 2, num: '02', title: 'AlgoSensei', role: 'Full-StackDeveloper',       status: 'in-progress', clickable: false },
+  { id: 3, num: '03', title: 'Density Clustering Iris', role: 'Solo Developer', status: 'completed', clickable: false },
+  { id: 4, num: '04', title: ' American Sign Language to Speech', role: 'Solo Developer',       status: 'completed', clickable: false },
 ];
 
 const NAV_ITEMS = [
@@ -115,9 +108,7 @@ const CONTACT_ITEMS = [
   },
 ];
 
-// ─────────────────────────────────────────────────────────────────────────────
-// STYLES
-// ─────────────────────────────────────────────────────────────────────────────
+
 
 const FONTS = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
@@ -443,7 +434,7 @@ const CSS_STYLES = `
   }
   .pf-section-title {
     font-family: var(--serif);
-    font-size: clamp(36px, 4.5vw, 54px);
+    font-size: clamp(36px, 4.5vw, 28px);
     letter-spacing: -.02em;
     line-height: 1;
   }
@@ -634,6 +625,7 @@ const CSS_STYLES = `
     line-height: 1.8;
     color: var(--ink-m);
     margin-bottom: 24px;
+    justify-content: justify;
   }
 
   /* ─── Footer ─── */
@@ -835,10 +827,6 @@ const CSS_STYLES = `
     .pf-scroll-top { bottom: 20px; right: 20px; }
   }
 `;
-
-// ─────────────────────────────────────────────────────────────────────────────
-// COMPONENTS
-// ─────────────────────────────────────────────────────────────────────────────
 
 const Navigation = ({ scrolled, menuOpen, setMenuOpen, onNavigate, activeSection }) => (
   <>
