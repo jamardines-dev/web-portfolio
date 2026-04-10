@@ -42,10 +42,10 @@ const GALLERY_PHOTOS = [
 
 const SKILLS = [
   { logo: javaLogo,   name: 'Java',   desc: 'Object-oriented applications and backend services' },
-  { logo: kotlinLogo, name: 'Kotlin', desc: 'Android & mobile-first development' },
-  { logo: reactLogo,  name: 'React',  desc: 'Modern, component-driven web interfaces' },
+  { logo: kotlinLogo, name: 'Kotlin', desc: 'Android & Mobile Development' },
+  { logo: reactLogo,  name: 'React',  desc: 'Modern, component-driven web interfaces, cross-platform development' },
   { logo: dockerLogo, name: 'Docker', desc: 'Containerization for consistent development and deployment' },
-  { logo: pythonLogo, name: 'Python', desc: 'Data processing, automation, and backend scripting' },
+  { logo: pythonLogo, name: 'Python', desc: 'Data processing, automation, and machine learning' },
 ];
 
 const PROJECTS = [
@@ -83,7 +83,7 @@ const CONTACT_ITEMS = [
   {
     label: 'Email',
     value: 'jamardines16@gmail.com',
-    href: 'mailto:jam.ardines@example.com',
+    href: 'mailto:jamardines16@gmail.com',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ width: 14, height: 14 }}>
         <rect x="2" y="4" width="20" height="16" rx="2" />
@@ -656,7 +656,7 @@ const CSS_STYLES = `
     transition: color .2s;
   }
   .pf-footer-links a:hover { color: var(--blue); }
-  .pf-footer-copy { font-size: 11px; color: var(--ink-f); }
+  .pf-footer-copy { font-size: 11px; color: var(--ink-f);}
   .pf-back-top {
     width: 36px;
     height: 36px;
@@ -1143,7 +1143,6 @@ const Footer = ({ onScrollToTop }) => (
         <p className="pf-footer-copy">
           © {new Date().getFullYear()} Jam Ardines. All rights reserved.
         </p>
-        <button className="pf-back-top" onClick={onScrollToTop} aria-label="Back to top">↑</button>
       </div>
     </div>
   </footer>
